@@ -1,0 +1,194 @@
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #050510; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: 'Orbitron', sans-serif;
+    color: #fff;
+    overflow: hidden;
+}
+
+#gameContainer {
+    position: relative;
+    width: 600px;
+    height: 800px;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+    border: 2px solid #334;
+}
+
+canvas {
+    display: block;
+    background: #000; 
+}
+
+
+#uiLayer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; 
+}
+
+
+.hud {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2rem;
+    text-shadow: 0 0 5px cyan;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+    z-index: 10;
+}
+
+.score-box, .wave-box {
+    color: #0ff;
+}
+
+.hp-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #f00;
+    text-shadow: 0 0 5px red;
+}
+
+.hp-bar-bg {
+    width: 150px;
+    height: 15px;
+    background: #300;
+    border: 1px solid #f00;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.hp-bar-fill {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #f00, #ff4c4c);
+    box-shadow: 0 0 10px red;
+    transition: width 0.2s ease-out;
+}
+
+
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    pointer-events: auto; 
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.screen.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+p {
+    font-size: 1.2rem;
+    color: #ccc;
+    margin-bottom: 2rem;
+}
+
+
+#startScreen h1 {
+    color: #0ff;
+    text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+    animation: neonPulse 2s infinite alternate;
+}
+
+.high-score-display {
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+    color: #ffeb3b; 
+    text-shadow: 0 0 5px #ffeb3b;
+}
+
+
+.danger-text {
+    color: #ff0000;
+    text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
+}
+
+
+.victory-text {
+    color: #0f0;
+    text-shadow: 0 0 10px #0f0, 0 0 20px #0f0;
+}
+
+
+.neon-btn {
+    background: transparent;
+    color: #fff;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.5rem;
+    padding: 15px 40px;
+    border: 2px solid #fff;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.neon-btn:hover {
+    background: #fff;
+    color: #000;
+    box-shadow: 0 0 20px #fff, 0 0 40px #0ff;
+    border-color: #0ff;
+}
+
+#startBtn:hover {
+    color: #0ff;
+    background: rgba(0, 255, 255, 0.1);
+    box-shadow: 0 0 20px #0ff;
+}
+
+#restartBtn:hover, #victoryRestartBtn:hover {
+    color: #f00; 
+    border-color: #f00;
+    box-shadow: 0 0 20px #f00;
+    background: rgba(255, 0, 0, 0.1);
+}
+
+
+@keyframes neonPulse {
+    from {
+        text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 30px #0ff;
+    }
+    to {
+        text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 15px #0ff;
+    }
+}

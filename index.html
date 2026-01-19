@@ -1,34 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Cosmic Defenders</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <link rel="icon" href="Assets/Logo.png" type="image/x-icon">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
     <div id="gameContainer">
         <canvas id="gameCanvas" width="600" height="800"></canvas>
-        
+
         <div id="uiLayer">
-            
+
             <div class="hud">
                 <div class="score-box">SCORE: <span id="scoreVal">0</span></div>
+                <div class="hp-box">HP: <div class="hp-bar-bg">
+                        <div id="hpBar" class="hp-bar-fill"></div>
+                    </div>
+                </div>
                 <div class="wave-box">WAVE: <span id="waveVal">1</span></div>
             </div>
 
             <div id="startScreen" class="screen active">
-                <h1>Cosmic Defenders</h1>
-                <p>Defend the Skies. Save Earth. Be a Hero.</p>
-                <button id="startBtn">Start Mission</button>
+                <div class="logo-area">
+                    <h1>Cosmic Defenders</h1>
+                    <p>Defend the Skies. Save Earth. Be a Hero.</p>
+                </div>
+                <div class="high-score-display">HIGH SCORE: <span id="highScoreVal">0</span></div>
+                <button id="startBtn" class="neon-btn">Start Mission</button>
             </div>
 
             <div id="gameOverScreen" class="screen">
                 <h1 class="danger-text">MISSION FAILED</h1>
                 <p>Earth has been compromised.</p>
                 <p>Final Score: <span id="finalScore">0</span></p>
-                <button id="restartBtn">Retry Mission</button>
+                <button id="restartBtn" class="neon-btn">Retry Mission</button>
+            </div>
+
+            <div id="victoryScreen" class="screen">
+                <h1 class="victory-text">MISSION ACCOMPLISHED</h1>
+                <p>Earth is safe... for now.</p>
+                <p>Final Score: <span id="victoryScore">0</span></p>
+                <button id="victoryRestartBtn" class="neon-btn">Play Again</button>
             </div>
 
         </div>
@@ -39,5 +55,8 @@
     <script src="endless.js"></script>
     <script src="main.js"></script>
 
+
+
 </body>
+
 </html>
