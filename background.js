@@ -43,7 +43,7 @@ class Background {
     }
 
     init() {
-        // Clear stars array
+        
         this.stars = [];
         for (let i = 0; i < this.count; i++) {
             this.stars.push(new Star(this.canvas.width, this.canvas.height));
