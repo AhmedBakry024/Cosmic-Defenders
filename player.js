@@ -1,7 +1,9 @@
 const bulletImage = new Image();
 bulletImage.src = "Assets/bullet1.png";
-const bulletSound = new Audio('Assets/shot.mp3');
+const bulletSound = new Audio('Assets/Audio/shot.mp3');
 bulletSound.volume = 0.2;
+const damageSound = new Audio('Assets/Audio/damage.mp3');
+damageSound.volume = 0.3;
 
 class Bullet {
     constructor(x, y) {
@@ -80,6 +82,8 @@ class Player {
     // Damaging
     takeDamage() {
         this.hp -= 30;
+        damageSound.currentTime = 0;
+        damageSound.play().catch(() => {});
         if (this.hp < 0) this.hp = 0;
     }
 

@@ -1,5 +1,6 @@
 const UI = {
 
+
     scoreVal: null,
     waveVal: null,
     hpBar: null,
@@ -7,6 +8,14 @@ const UI = {
     finalScore: null,
     victoryScore: null,
     hud: null,
+
+    
+    startBtn: document.getElementById('startBtn'),
+    restartBtn: document.getElementById('restartBtn'),
+    victoryRestartBtn: document.getElementById('victoryRestartBtn'),
+    endlessBtn: document.getElementById('endlessBtn'),
+    endlessRestartBtn: document.getElementById('endlessRestartBtn'),
+
 
     startScreen: null,
     gameOverScreen: null,
@@ -56,6 +65,18 @@ const UI = {
             this.hideAllScreens();
             window.dispatchEvent(new CustomEvent('game-restart'));
         });
+
+        this.endlessBtn.addEventListener('click', () => {
+            this.hideAllScreens();
+            window.dispatchEvent(new CustomEvent('endless-start')); 
+        });
+
+        this.endlessRestartBtn.addEventListener('click', () => {
+            this.hideAllScreens();
+            window.dispatchEvent(new CustomEvent('endless-start')); 
+        });
+
+        
     },
 
     updateScore: function (score) {

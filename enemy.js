@@ -21,15 +21,15 @@ class Enemy {
   // phase 2: zigzag
   static createLevel2(canvasWidth) {
     const x = Math.random() * (canvasWidth - 150);
-    return new Enemy(x, -50, 3, 4);
+    return new Enemy(x, -50, 2.2, 4);
   }
 
   // phase 3: array of enemies
   static createLevel3(canvasWidth) {
     const x = Math.random() * (canvasWidth - 50);
     const tempArray = [];
-    for (let i = 0; i < 5; i++) {
-      tempArray.push(new Enemy(x, -70 * i, 2.5, 2));
+    for (let i = 0; i < 3; i++) {
+      tempArray.push(new Enemy(x, -70 * i, 2, 2));
     }
     return tempArray;
   }
