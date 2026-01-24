@@ -8,9 +8,8 @@ class Star {
     reset() {
         this.x = Math.random() * this.canvasWidth;
         this.y = Math.random() * this.canvasHeight;
-        this.size = Math.random() * 2 + 0.5; // Random size between 0.5 and 2.5
-        this.speed = Math.random() * 0.5 + 0.2; // Speed relative to depth (size) essentially
-        // Make larger stars faster to create parallax effect
+        this.size = Math.random() * 2 + 0.5; 
+        this.speed = Math.random() * 0.5 + 0.2; 
         this.speed = this.size * 0.5;
         this.brightness = Math.random();
     }
@@ -56,10 +55,8 @@ class Background {
     }
 
     draw() {
-        // Clear background with a semi-transparent black to create trails or just solid black?
-        // Game design usually prefers solid clear for crisp movement, or maybe just fillrect.
-        // Since this is a "background" layer, we likely want to fill with the space color.
-        this.ctx.fillStyle = '#050510'; // Match CSS background color
+        
+        this.ctx.fillStyle = '#050510'; 
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
         this.stars.forEach(star => star.draw(this.ctx));
@@ -72,5 +69,5 @@ class Background {
     }
 }
 
-// Attach to window so it can be accessed in main.js
+
 window.Background = Background;
