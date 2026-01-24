@@ -1,5 +1,5 @@
 const bulletImage = new Image();
-bulletImage.src = "Assets/bullet.png";
+bulletImage.src = "Assets/bullet1.png";
 const bulletSound = new Audio('Assets/shot.mp3');
 bulletSound.volume = 0.2;
 
@@ -28,16 +28,16 @@ class Player {
     constructor(gameCanvas) {
         this.canvas = gameCanvas;
         this.width = 128;
-        this.height = 128;
+        this.height = 100;
         this.maxHp = 90;
         this.hp = this.maxHp;
         this.x = this.canvas.width / 2 - this.width / 2;
         this.y = this.canvas.height - 150;
         this.speed = 6;
         this.image = new Image();
-        this.image.src = "Assets/ship.png"; 
+        this.image.src = "Assets/ship1.png"; 
         this.earthImage = new Image();
-        this.earthImage.src = "Assets/earth.png"; 
+        this.earthImage.src = "Assets/earth1.png"; 
         this.earthHeight = 100;
         this.keys = {
             left: false,
@@ -46,7 +46,7 @@ class Player {
         };
         this.bullets = [];
         this.shootTimer = 0;    
-        this.shootInterval = 30;
+        this.shootInterval = 40;
         this.edgeOffset = 20;
         this.addEventListeners();
     }
@@ -111,12 +111,16 @@ class Player {
 
     draw(ctx) {
         if (this.earthImage.complete) {
+            const aspectRatio = this.earthImage.width / this.earthImage.height;
+            const drawWidth = this.canvas.width;
+            const drawHeight = drawWidth / aspectRatio;
+            
             ctx.drawImage(
                 this.earthImage, 
                 0,
                 this.canvas.height - this.earthHeight,
-                this.canvas.width, 
-                this.earthHeight 
+                drawWidth, 
+                drawHeight 
             );
         }
         if (this.image.complete) {

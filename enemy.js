@@ -1,10 +1,10 @@
 const enemyImage = new Image();
-enemyImage.src = "Assets/alien.png";
+enemyImage.src = "Assets/alien1.png";
 
 class Enemy {
   constructor(x, y, speed, curve) {
-    this.width = 60;
-    this.height = 60;
+    this.width = 80;
+    this.height = 40;
     this.x = x;
     this.y = y;
     this.speed = speed;
@@ -20,7 +20,7 @@ class Enemy {
 
   // phase 2: zigzag
   static createLevel2(canvasWidth) {
-    const x = Math.random() * (canvasWidth - 50);
+    const x = Math.random() * (canvasWidth - 150);
     return new Enemy(x, -50, 3, 4);
   }
 

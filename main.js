@@ -10,7 +10,7 @@ class Game {
         this.gameRunning = false;
         this.waveTimer = 0;
         this.waveInterval = 400;
-        this.enemiesPerWave = 12;
+        this.enemiesPerWave = 8;
         this.animationId = null;
         this.spawnQueue = []; 
         this.spawnDelay = 0; 
@@ -86,33 +86,36 @@ class Game {
         const numEnemies = Math.min(8, this.wave + 2);
         
         for (let i = 0; i < numEnemies; i++) {
-            const x = this.getSafeSpawnPosition(60);
-            
             if (this.wave <= 3) {
-                this.spawnQueue.push({ type: 'level1', x: x });
+                this.spawnQueue.push({ type: 'level1' });
             } else if (this.wave <= 8) {
                 const type = Math.random() < 0.5 ? 'level1' : 'level2';
-                this.spawnQueue.push({ type: type, x: x });
+                this.spawnQueue.push({ type: type });
             } else {
-                this.spawnQueue.push({ type: 'level2', x: x });
+                const type = Math.random() < 0.7 ? 'level2' : 'level3';
+                this.spawnQueue.push({ type: type });
             }
         }
 
         this.wave++;
-    }
+    }  
+    
 
     spawnNextEnemy() {
         if (this.spawnQueue.length > 0 && this.spawnDelay === 0) {
             const enemyData = this.spawnQueue.shift();
             
-            let enemy;
             if (enemyData.type === 'level1') {
-                enemy = new Enemy(enemyData.x, -50, 2, 0);
+                const enemy = Enemy.createLevel1(this.canvas.width);
+                this.enemies.push(enemy);
             } else if (enemyData.type === 'level2') {
-                enemy = new Enemy(enemyData.x, -50, 3, 4);
+                const enemy = Enemy.createLevel2(this.canvas.width);
+                this.enemies.push(enemy);
+            } else if (enemyData.type === 'level3') {
+                const enemyArray = Enemy.createLevel3(this.canvas.width);
+                this.enemies.push(...enemyArray);
             }
             
-            this.enemies.push(enemy);
             this.spawnDelay = this.spawnInterval;
         }
     }
