@@ -209,4 +209,20 @@ p {
     to {
         text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 15px #0ff;
     }
+
 }
+
+}
+#howToPlay {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    width: 580px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 15px;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #ccc;
+    text-shadow: 0 0 5px cyan;
+}
+
