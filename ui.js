@@ -1,35 +1,50 @@
 const UI = {
-    
-    scoreVal: document.getElementById('scoreVal'),
-    waveVal: document.getElementById('waveVal'),
-    hpBar: document.getElementById('hpBar'),
-    highScoreVal: document.getElementById('highScoreVal'),
-    finalScore: document.getElementById('finalScore'),
-    victoryScore: document.getElementById('victoryScore'),
-    hud: document.querySelector('.hud'),
-    
-    
-    startScreen: document.getElementById('startScreen'),
-    gameOverScreen: document.getElementById('gameOverScreen'),
-    victoryScreen: document.getElementById('victoryScreen'),
 
-    
-    startBtn: document.getElementById('startBtn'),
-    restartBtn: document.getElementById('restartBtn'),
-    victoryRestartBtn: document.getElementById('victoryRestartBtn'),
+    scoreVal: null,
+    waveVal: null,
+    hpBar: null,
+    highScoreVal: null,
+    finalScore: null,
+    victoryScore: null,
+    hud: null,
 
-    init: function() {
+    startScreen: null,
+    gameOverScreen: null,
+    victoryScreen: null,
+
+    startBtn: null,
+    restartBtn: null,
+    victoryRestartBtn: null,
+
+    init: function () {
         console.log("UI Initialized");
+
+        this.scoreVal = document.getElementById('scoreVal');
+        this.waveVal = document.getElementById('waveVal');
+        this.hpBar = document.getElementById('hpBar');
+        this.highScoreVal = document.getElementById('highScoreVal');
+        this.finalScore = document.getElementById('finalScore');
+        this.victoryScore = document.getElementById('victoryScore');
+        this.hud = document.querySelector('.hud');
+
+        this.startScreen = document.getElementById('startScreen');
+        this.gameOverScreen = document.getElementById('gameOverScreen');
+        this.victoryScreen = document.getElementById('victoryScreen');
+
+        this.startBtn = document.getElementById('startBtn');
+        this.restartBtn = document.getElementById('restartBtn');
+        this.victoryRestartBtn = document.getElementById('victoryRestartBtn');
+
         this.bindEvents();
         this.updateHighScoreDisplay();
         this.hideHUD(); // Hide HUD initially
     },
 
-    bindEvents: function() {
+    bindEvents: function () {
         this.startBtn.addEventListener('click', () => {
             this.hideAllScreens();
-            
-            window.dispatchEvent(new CustomEvent('game-start')); 
+
+            window.dispatchEvent(new CustomEvent('game-start'));
         });
 
         this.restartBtn.addEventListener('click', () => {
@@ -43,57 +58,62 @@ const UI = {
         });
     },
 
-    updateScore: function(score) {
+    updateScore: function (score) {
         this.scoreVal.innerText = score;
     },
 
-    updateWave: function(wave) {
+    updateWave: function (wave) {
         this.waveVal.innerText = wave;
     },
 
-    updateHealth: function(hpPercent) {
-        
+    updateHealth: function (hpPercent) {
+
         this.hpBar.style.width = hpPercent + "%";
     },
 
-    showHUD: function() {
+    showHUD: function () {
         this.hud.classList.add('visible');
+        this.hud.style.opacity = '1';
+        this.hud.style.visibility = 'visible';
+        console.log("HUD Forced Visible");
     },
 
-    hideHUD: function() {
+    hideHUD: function () {
         this.hud.classList.remove('visible');
+        this.hud.style.opacity = '0';
+        this.hud.style.visibility = 'hidden';
     },
 
-    showStartScreen: function() {
+    showStartScreen: function () {
         this.hideHUD();
         this.showScreen(this.startScreen);
         this.updateHighScoreDisplay();
     },
 
-    showGameOverScreen: function(finalScore) {
+    showGameOverScreen: function (finalScore) {
         this.hideHUD();
         this.finalScore.innerText = finalScore;
         this.saveHighScore(finalScore);
         this.showScreen(this.gameOverScreen);
     },
 
-    showVictoryScreen: function(finalScore) {
+    showVictoryScreen: function (finalScore) {
         this.hideHUD();
         this.victoryScore.innerText = finalScore;
         this.saveHighScore(finalScore);
         this.showScreen(this.victoryScreen);
     },
 
-    showScreen: function(screenElement) {
-        
+    showScreen: function (screenElement) {
+
         this.hideAllScreens();
-        
+
         screenElement.classList.add('active');
         screenElement.style.visibility = 'visible';
         screenElement.style.opacity = '1';
     },
 
-    hideAllScreens: function() {
+    hideAllScreens: function () {
         const screens = document.querySelectorAll('.screen');
         screens.forEach(s => {
             s.classList.remove('active');
@@ -102,19 +122,19 @@ const UI = {
         });
     },
 
-    
-    saveHighScore: function(score) {
+
+    saveHighScore: function (score) {
         const currentHigh = this.getHighScore();
         if (score > currentHigh) {
             localStorage.setItem('cosmicDefendersHighScore', score);
         }
     },
 
-    getHighScore: function() {
+    getHighScore: function () {
         return parseInt(localStorage.getItem('cosmicDefendersHighScore')) || 0;
     },
 
-    updateHighScoreDisplay: function() {
+    updateHighScoreDisplay: function () {
         this.highScoreVal.innerText = this.getHighScore();
     }
 };

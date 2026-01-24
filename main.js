@@ -2,6 +2,7 @@ class Game {
     constructor() {
         this.canvas = document.getElementById('gameCanvas');
         this.ctx = this.canvas.getContext('2d');
+        this.background = new Background(this.canvas);
         this.player = new Player(this.canvas);
         this.enemies = [];
         this.score = 0;
@@ -12,19 +13,19 @@ class Game {
         this.waveInterval = 400;
         this.enemiesPerWave = 8;
         this.animationId = null;
-        this.spawnQueue = []; 
-        this.spawnDelay = 0; 
+        this.spawnQueue = [];
+        this.spawnDelay = 0;
         this.spawnInterval = 60;
         this.uiUpdateCounter = 0;
         this.uiUpdateInterval = 5;
-        
+
         this.init();
     }
 
     init() {
         window.addEventListener('game-start', () => this.start());
         window.addEventListener('game-restart', () => this.restart());
-        
+
         UI.showStartScreen();
     }
 
@@ -58,9 +59,9 @@ class Game {
     }
 
     isPositionSafe(x, minDistance = 100) {
-        return !this.enemies.some(enemy => 
+        return !this.enemies.some(enemy =>
             Math.abs(enemy.x - x) < minDistance && enemy.y < 100
-        ) && !this.spawnQueue.some(enemyData => 
+        ) && !this.spawnQueue.some(enemyData =>
             Math.abs(enemyData.x - x) < minDistance
         );
     }
@@ -70,21 +71,21 @@ class Game {
         const margin = 50;
         let attempts = 0;
         let x;
-        
+
         do {
             x = margin + Math.random() * (this.canvas.width - enemyWidth - margin * 2);
             attempts++;
             if (attempts > 10) break;
         } while (!this.isPositionSafe(x, minDistance));
-        
+
         return x;
     }
 
     prepareWave() {
         UI.updateWave(this.wave);
-        
+
         const numEnemies = Math.min(8, this.wave + 2);
-        
+
         for (let i = 0; i < numEnemies; i++) {
             if (this.wave <= 3) {
                 this.spawnQueue.push({ type: 'level1' });
@@ -98,13 +99,13 @@ class Game {
         }
 
         this.wave++;
-    }  
-    
+    }
+
 
     spawnNextEnemy() {
         if (this.spawnQueue.length > 0 && this.spawnDelay === 0) {
             const enemyData = this.spawnQueue.shift();
-            
+
             if (enemyData.type === 'level1') {
                 const enemy = Enemy.createLevel1(this.canvas.width);
                 this.enemies.push(enemy);
@@ -115,24 +116,24 @@ class Game {
                 const enemyArray = Enemy.createLevel3(this.canvas.width);
                 this.enemies.push(...enemyArray);
             }
-            
+
             this.spawnDelay = this.spawnInterval;
         }
     }
 
     checkCollision(rect1, rect2) {
         return rect1.x < rect2.x + rect2.width &&
-               rect1.x + rect1.width > rect2.x &&
-               rect1.y < rect2.y + rect2.height &&
-               rect1.y + rect1.height > rect2.y;
+            rect1.x + rect1.width > rect2.x &&
+            rect1.y < rect2.y + rect2.height &&
+            rect1.y + rect1.height > rect2.y;
     }
 
     handleCollisions() {
         for (let i = this.enemies.length - 1; i >= 0; i--) {
             const enemy = this.enemies[i];
-            
+
             if (enemy.markedForDeletion) continue;
-            
+
             for (let j = this.player.bullets.length - 1; j >= 0; j--) {
                 const bullet = this.player.bullets[j];
                 if (!bullet.markedForDeletion && this.checkCollision(bullet, enemy)) {
@@ -142,9 +143,9 @@ class Game {
                     break;
                 }
             }
-            
+
             if (enemy.markedForDeletion) continue;
-            
+
             if (this.checkCollision(this.player, enemy)) {
                 enemy.markedForDeletion = true;
                 this.player.takeDamage();
@@ -156,6 +157,7 @@ class Game {
     }
 
     updateGame() {
+        this.background.update();
         this.player.update();
 
         this.enemies.forEach(enemy => enemy.update());
@@ -175,10 +177,10 @@ class Game {
                 this.prepareWave();
                 this.waveTimer = this.waveInterval;
             }
-            
+
             if (this.waveTimer > 0) this.waveTimer--;
         }
-        
+
         if (this.spawnDelay > 0) this.spawnDelay--;
         this.spawnNextEnemy();
 
@@ -196,7 +198,7 @@ class Game {
     }
 
     drawGame() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.background.draw();
 
         this.player.draw(this.ctx);
 

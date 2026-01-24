@@ -1,8 +1,7 @@
-
 body {
     margin: 0;
     padding: 0;
-    background-color: #050510; 
+    background-color: #050510;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -22,7 +21,7 @@ body {
 
 canvas {
     display: block;
-    background: #000; 
+    background: #000;
 }
 
 
@@ -32,7 +31,7 @@ canvas {
     left: 0;
     width: 100%;
     height: 100%;
-    pointer-events: none; 
+    pointer-events: none;
 }
 
 
@@ -48,8 +47,8 @@ canvas {
     align-items: center;
     font-size: 1.2rem;
     text-shadow: 0 0 5px cyan;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
-    z-index: 10;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent);
+    z-index: 100;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease;
@@ -60,7 +59,8 @@ canvas {
     visibility: visible;
 }
 
-.score-box, .wave-box {
+.score-box,
+.wave-box {
     color: #0ff;
 }
 
@@ -102,7 +102,7 @@ canvas {
     justify-content: center;
     align-items: center;
     text-align: center;
-    pointer-events: auto; 
+    pointer-events: auto;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease;
@@ -138,7 +138,7 @@ p {
 .high-score-display {
     margin-bottom: 30px;
     font-size: 1.1rem;
-    color: #ffeb3b; 
+    color: #ffeb3b;
     text-shadow: 0 0 5px #ffeb3b;
 }
 
@@ -192,8 +192,9 @@ p {
     border-color: #ffeb3b;
 }
 
-#restartBtn:hover, #victoryRestartBtn:hover {
-    color: #f00; 
+#restartBtn:hover,
+#victoryRestartBtn:hover {
+    color: #f00;
     border-color: #f00;
     box-shadow: 0 0 20px #f00;
     background: rgba(255, 0, 0, 0.1);
@@ -204,6 +205,7 @@ p {
     from {
         text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 30px #0ff;
     }
+
     to {
         text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 15px #0ff;
     }
