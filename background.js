@@ -10,7 +10,7 @@ class Star {
         this.y = Math.random() * this.canvasHeight;
         this.size = Math.random() * 2 + 0.5; 
         this.speed = Math.random() * 0.5 + 0.2; 
-        
+
         this.speed = this.size * 0.5;
         this.brightness = Math.random();
     }
@@ -56,7 +56,7 @@ class Background {
     }
 
     draw() {
-       
+
         this.ctx.fillStyle = '#050510'; 
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
