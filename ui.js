@@ -6,6 +6,7 @@ const UI = {
     highScoreVal: document.getElementById('highScoreVal'),
     finalScore: document.getElementById('finalScore'),
     victoryScore: document.getElementById('victoryScore'),
+    hud: document.querySelector('.hud'),
     
     
     startScreen: document.getElementById('startScreen'),
@@ -21,6 +22,7 @@ const UI = {
         console.log("UI Initialized");
         this.bindEvents();
         this.updateHighScoreDisplay();
+        this.hideHUD(); // Hide HUD initially
     },
 
     bindEvents: function() {
@@ -54,18 +56,29 @@ const UI = {
         this.hpBar.style.width = hpPercent + "%";
     },
 
+    showHUD: function() {
+        this.hud.classList.add('visible');
+    },
+
+    hideHUD: function() {
+        this.hud.classList.remove('visible');
+    },
+
     showStartScreen: function() {
+        this.hideHUD();
         this.showScreen(this.startScreen);
         this.updateHighScoreDisplay();
     },
 
     showGameOverScreen: function(finalScore) {
+        this.hideHUD();
         this.finalScore.innerText = finalScore;
         this.saveHighScore(finalScore);
         this.showScreen(this.gameOverScreen);
     },
 
     showVictoryScreen: function(finalScore) {
+        this.hideHUD();
         this.victoryScore.innerText = finalScore;
         this.saveHighScore(finalScore);
         this.showScreen(this.victoryScreen);

@@ -1,44 +1,213 @@
+class Game {
+    constructor() {
+        this.canvas = document.getElementById('gameCanvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.player = new Player(this.canvas);
+        this.enemies = [];
+        this.score = 0;
+        this.wave = 1;
+        this.maxWaves = 3;
+        this.gameRunning = false;
+        this.waveTimer = 0;
+        this.waveInterval = 400;
+        this.enemiesPerWave = 12;
+        this.animationId = null;
+        this.spawnQueue = []; 
+        this.spawnDelay = 0; 
+        this.spawnInterval = 60;
+        
+        this.init();
+    }
 
+    init() {
+        window.addEventListener('game-start', () => this.start());
+        window.addEventListener('game-restart', () => this.restart());
+        
+        UI.showStartScreen();
+    }
+
+    start() {
+        this.gameRunning = true;
+        this.reset();        UI.showHUD();        this.animate();
+    }
+
+    restart() {
+        this.start();
+    }
+
+    reset() {
+        this.player.reset();
+        this.enemies = [];
+        this.score = 0;
+        this.wave = 1;
+        this.waveTimer = 0;
+        this.spawnQueue = [];
+        this.spawnDelay = 0;
+        UI.updateScore(this.score);
+        UI.updateWave(this.wave);
+        UI.updateHealth((this.player.hp / this.player.maxHp) * 100);
+    }
+
+    isPositionSafe(x, minDistance = 100) {
+        return !this.enemies.some(enemy => 
+            Math.abs(enemy.x - x) < minDistance && enemy.y < 100
+        ) && !this.spawnQueue.some(enemyData => 
+            Math.abs(enemyData.x - x) < minDistance
+        );
+    }
+
+    getSafeSpawnPosition(enemyWidth) {
+        const minDistance = 100;
+        const margin = 50;
+        let attempts = 0;
+        let x;
+        
+        do {
+            x = margin + Math.random() * (this.canvas.width - enemyWidth - margin * 2);
+            attempts++;
+            if (attempts > 50) break;
+        } while (!this.isPositionSafe(x, minDistance));
+        
+        return x;
+    }
+
+    prepareWave() {
+        UI.updateWave(this.wave);
+        
+        const numEnemies = Math.min(this.enemiesPerWave, this.wave + 2);
+        
+        for (let i = 0; i < numEnemies; i++) {
+            const x = this.getSafeSpawnPosition(60);
+            
+            if (this.wave <= 3) {
+                this.spawnQueue.push({ type: 'level1', x: x });
+            } else if (this.wave <= 8) {
+                const type = Math.random() < 0.5 ? 'level1' : 'level2';
+                this.spawnQueue.push({ type: type, x: x });
+            } else {
+                this.spawnQueue.push({ type: 'level2', x: x });
+            }
+        }
+
+        this.wave++;
+    }
+
+    spawnNextEnemy() {
+        if (this.spawnQueue.length > 0 && this.spawnDelay === 0) {
+            const enemyData = this.spawnQueue.shift();
+            
+            let enemy;
+            if (enemyData.type === 'level1') {
+                enemy = new Enemy(enemyData.x, -50, 2, 0);
+            } else if (enemyData.type === 'level2') {
+                enemy = new Enemy(enemyData.x, -50, 3, 4);
+            }
+            
+            this.enemies.push(enemy);
+            this.spawnDelay = this.spawnInterval;
+        }
+    }
+
+    checkCollision(rect1, rect2) {
+        return rect1.x < rect2.x + rect2.width &&
+               rect1.x + rect1.width > rect2.x &&
+               rect1.y < rect2.y + rect2.height &&
+               rect1.y + rect1.height > rect2.y;
+    }
+
+    handleCollisions() {
+        this.player.bullets.forEach(bullet => {
+            this.enemies.forEach(enemy => {
+                if (this.checkCollision(bullet, enemy)) {
+                    bullet.markedForDeletion = true;
+                    enemy.markedForDeletion = true;
+                    this.score += 10;
+                    UI.updateScore(this.score);
+                }
+            });
+        });
+
+        this.enemies.forEach(enemy => {
+            if (this.checkCollision(this.player, enemy)) {
+                enemy.markedForDeletion = true;
+                this.player.takeDamage();
+                UI.updateHealth((this.player.hp / this.player.maxHp) * 100);
+            }
+        });
+
+        this.enemies.forEach(enemy => {
+            if (enemy.y + enemy.height >= this.canvas.height - this.player.earthHeight) {
+                enemy.markedForDeletion = true;
+                this.player.takeDamage();
+                UI.updateHealth((this.player.hp / this.player.maxHp) * 100);
+            }
+        });
+    }
+
+    updateGame() {
+        this.player.update();
+
+        this.enemies.forEach(enemy => enemy.update());
+        this.enemies = this.enemies.filter(enemy => !enemy.markedForDeletion);
+
+        this.handleCollisions();
+
+        if (this.wave <= this.maxWaves) {
+            if (this.waveTimer === 0 && this.spawnQueue.length === 0) {
+                this.prepareWave();
+                this.waveTimer = this.waveInterval;
+            }
+            
+            if (this.waveTimer > 0) this.waveTimer--;
+        }
+        
+        if (this.spawnDelay > 0) this.spawnDelay--;
+        this.spawnNextEnemy();
+
+        if (this.player.hp <= 0) {
+            this.gameOver();
+            return;
+        }
+
+        if (this.wave >= this.maxWaves) {
+            if (this.enemies.length === 0 && this.spawnQueue.length === 0) {
+                this.victory();
+                return;
+            }
+        }
+    }
+
+    drawGame() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        this.player.draw(this.ctx);
+
+        this.enemies.forEach(enemy => enemy.draw(this.ctx));
+    }
+
+    animate() {
+        if (!this.gameRunning) return;
+
+        this.updateGame();
+        this.drawGame();
+
+        this.animationId = requestAnimationFrame(() => this.animate());
+    }
+
+    gameOver() {
+        this.gameRunning = false;
+        if (this.animationId) cancelAnimationFrame(this.animationId);
+        UI.showGameOverScreen(this.score);
+    }
+
+    victory() {
+        this.gameRunning = false;
+        if (this.animationId) cancelAnimationFrame(this.animationId);
+        UI.showVictoryScreen(this.score);
+    }
+}
 
 document.addEventListener('DOMContentLoaded', () => {
-    
-    console.log("Cosmic Defenders UI Initialized.");
-
-    
+    const game = new Game();
+    console.log("Cosmic Defenders Initialized!");
 });
-
-
-
-window.addEventListener('game-start', () => {
-    console.log("UI Event Received: game-start");
-    
-});
-
-window.addEventListener('game-restart', () => {
-    console.log("UI Event Received: game-restart");
-    
-});
-
-
-
-window.GameUI = {
-    updateScore: (score) => UI.updateScore(score),
-    updateHP: (hp) => UI.updateHealth(hp),
-    updateWave: (wave) => UI.updateWave(wave),
-    showGameOver: (score) => UI.showGameOverScreen(score),
-    showVictory: (score) => UI.showVictoryScreen(score)
-};
-
-// to test player and bullet feature
-/*
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
-const player = new Player(canvas);
-function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height); 
-    player.update();
-    player.draw(ctx);
-    requestAnimationFrame(animate);
-}
-animate();
-*/

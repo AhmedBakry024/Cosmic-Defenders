@@ -4,7 +4,7 @@ class Bullet {
         this.y = y;
         this.width = 30;
         this.height = 30;
-        this.speed = 2;
+        this.speed = 4;
         this.markedForDeletion = false;
         this.image = new Image();
         this.image.src = "Assets/bullet.png";
@@ -29,7 +29,7 @@ class Player {
         this.hp = this.maxHp;
         this.x = this.canvas.width / 2 - this.width / 2;
         this.y = this.canvas.height - 150;
-        this.speed = 3;
+        this.speed = 6;
         this.image = new Image();
         this.image.src = "Assets/ship.png"; 
         this.earthImage = new Image();
