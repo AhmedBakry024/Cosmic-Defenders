@@ -6,7 +6,7 @@ class Game {
         this.enemies = [];
         this.score = 0;
         this.wave = 1;
-        this.maxWaves = 3;
+        this.maxWaves = 12;
         this.gameRunning = false;
         this.waveTimer = 0;
         this.waveInterval = 400;
@@ -15,6 +15,8 @@ class Game {
         this.spawnQueue = []; 
         this.spawnDelay = 0; 
         this.spawnInterval = 60;
+        this.uiUpdateCounter = 0;
+        this.uiUpdateInterval = 5;
         
         this.init();
     }
@@ -27,8 +29,14 @@ class Game {
     }
 
     start() {
+        if (this.animationId) {
+            cancelAnimationFrame(this.animationId);
+            this.animationId = null;
+        }
         this.gameRunning = true;
-        this.reset();        UI.showHUD();        this.animate();
+        this.reset();
+        UI.showHUD();
+        this.animate();
     }
 
     restart() {
@@ -43,6 +51,7 @@ class Game {
         this.waveTimer = 0;
         this.spawnQueue = [];
         this.spawnDelay = 0;
+        this.uiUpdateCounter = 0;
         UI.updateScore(this.score);
         UI.updateWave(this.wave);
         UI.updateHealth((this.player.hp / this.player.maxHp) * 100);
@@ -65,7 +74,7 @@ class Game {
         do {
             x = margin + Math.random() * (this.canvas.width - enemyWidth - margin * 2);
             attempts++;
-            if (attempts > 50) break;
+            if (attempts > 10) break;
         } while (!this.isPositionSafe(x, minDistance));
         
         return x;
@@ -74,7 +83,7 @@ class Game {
     prepareWave() {
         UI.updateWave(this.wave);
         
-        const numEnemies = Math.min(this.enemiesPerWave, this.wave + 2);
+        const numEnemies = Math.min(8, this.wave + 2);
         
         for (let i = 0; i < numEnemies; i++) {
             const x = this.getSafeSpawnPosition(60);
@@ -116,32 +125,31 @@ class Game {
     }
 
     handleCollisions() {
-        this.player.bullets.forEach(bullet => {
-            this.enemies.forEach(enemy => {
-                if (this.checkCollision(bullet, enemy)) {
+        for (let i = this.enemies.length - 1; i >= 0; i--) {
+            const enemy = this.enemies[i];
+            
+            if (enemy.markedForDeletion) continue;
+            
+            for (let j = this.player.bullets.length - 1; j >= 0; j--) {
+                const bullet = this.player.bullets[j];
+                if (!bullet.markedForDeletion && this.checkCollision(bullet, enemy)) {
                     bullet.markedForDeletion = true;
                     enemy.markedForDeletion = true;
                     this.score += 10;
-                    UI.updateScore(this.score);
+                    break;
                 }
-            });
-        });
-
-        this.enemies.forEach(enemy => {
+            }
+            
+            if (enemy.markedForDeletion) continue;
+            
             if (this.checkCollision(this.player, enemy)) {
                 enemy.markedForDeletion = true;
                 this.player.takeDamage();
-                UI.updateHealth((this.player.hp / this.player.maxHp) * 100);
-            }
-        });
-
-        this.enemies.forEach(enemy => {
-            if (enemy.y + enemy.height >= this.canvas.height - this.player.earthHeight) {
+            } else if (enemy.y + enemy.height >= this.canvas.height - this.player.earthHeight) {
                 enemy.markedForDeletion = true;
                 this.player.takeDamage();
-                UI.updateHealth((this.player.hp / this.player.maxHp) * 100);
             }
-        });
+        }
     }
 
     updateGame() {
@@ -151,6 +159,13 @@ class Game {
         this.enemies = this.enemies.filter(enemy => !enemy.markedForDeletion);
 
         this.handleCollisions();
+
+        this.uiUpdateCounter++;
+        if (this.uiUpdateCounter >= this.uiUpdateInterval) {
+            UI.updateScore(this.score);
+            UI.updateHealth((this.player.hp / this.player.maxHp) * 100);
+            this.uiUpdateCounter = 0;
+        }
 
         if (this.wave <= this.maxWaves) {
             if (this.waveTimer === 0 && this.spawnQueue.length === 0) {

@@ -1,3 +1,8 @@
+const bulletImage = new Image();
+bulletImage.src = "Assets/bullet.png";
+const bulletSound = new Audio('Assets/shot.mp3');
+bulletSound.volume = 0.2;
+
 class Bullet {
     constructor(x, y) {
         this.x = x;
@@ -6,8 +11,7 @@ class Bullet {
         this.height = 30;
         this.speed = 4;
         this.markedForDeletion = false;
-        this.image = new Image();
-        this.image.src = "Assets/bullet.png";
+        this.image = bulletImage;
     }
 
     update() {
@@ -67,6 +71,9 @@ class Player {
             const bulletY = this.y;
             this.bullets.push(new Bullet(bulletX, bulletY));
             this.shootTimer = this.shootInterval;
+
+            bulletSound.currentTime = 0;
+            bulletSound.play().catch(() => {});
         }
     }
 
