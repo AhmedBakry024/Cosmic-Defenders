@@ -1,3 +1,8 @@
+const explosionSound = new Audio('Assets/Audio/boom.wav');
+explosionSound.volume = 0.1;
+const victorySound = new Audio('Assets/Audio/victory.mp3');
+victorySound.volume = 0.3;
+
 class Game {
     constructor() {
         this.canvas = document.getElementById('gameCanvas');
@@ -92,7 +97,7 @@ class Game {
                 const type = Math.random() < 0.5 ? 'level1' : 'level2';
                 this.spawnQueue.push({ type: type });
             } else {
-                const type = Math.random() < 0.7 ? 'level2' : 'level3';
+                const type = Math.random() < 0.75 ? 'level1' : 'level3';
                 this.spawnQueue.push({ type: type });
             }
         }
@@ -138,6 +143,8 @@ class Game {
                 if (!bullet.markedForDeletion && this.checkCollision(bullet, enemy)) {
                     bullet.markedForDeletion = true;
                     enemy.markedForDeletion = true;
+                    explosionSound.currentTime = 0;
+                    explosionSound.play().catch(() => {});
                     this.score += 10;
                     break;
                 }
@@ -214,12 +221,17 @@ class Game {
 
     gameOver() {
         this.gameRunning = false;
+        const gameOverSound = new Audio('Assets/Audio/gameover.mp3');
+        gameOverSound.volume = 0.3;
+        gameOverSound.play();
         if (this.animationId) cancelAnimationFrame(this.animationId);
         UI.showGameOverScreen(this.score);
     }
 
     victory() {
         this.gameRunning = false;
+        victorySound.currentTime = 0;
+        victorySound.play().catch(() => {});
         if (this.animationId) cancelAnimationFrame(this.animationId);
         UI.showVictoryScreen(this.score);
     }

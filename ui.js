@@ -17,6 +17,8 @@ const UI = {
     startBtn: document.getElementById('startBtn'),
     restartBtn: document.getElementById('restartBtn'),
     victoryRestartBtn: document.getElementById('victoryRestartBtn'),
+    endlessBtn: document.getElementById('endlessBtn'),
+    endlessRestartBtn: document.getElementById('endlessRestartBtn'),
 
     init: function() {
         console.log("UI Initialized");
@@ -41,6 +43,18 @@ const UI = {
             this.hideAllScreens();
             window.dispatchEvent(new CustomEvent('game-restart'));
         });
+
+        this.endlessBtn.addEventListener('click', () => {
+            this.hideAllScreens();
+            window.dispatchEvent(new CustomEvent('endless-start')); 
+        });
+
+        this.endlessRestartBtn.addEventListener('click', () => {
+            this.hideAllScreens();
+            window.dispatchEvent(new CustomEvent('endless-start')); 
+        });
+
+        
     },
 
     updateScore: function(score) {
